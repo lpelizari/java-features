@@ -342,47 +342,6 @@ String content = Files.readString(filePath);
 System.out.println(content);
 ```
 
-#### 5.3. `isSameFile(Path, Path)`
-
-Este método verifica se dois caminhos referenciam o mesmo arquivo. Isso é útil para evitar duplicação de operações em arquivos que são, na verdade, o mesmo arquivo físico no sistema.
-
-#### Sintaxe:
-```java
-public static boolean isSameFile(Path path1, Path path2) throws IOException
-```
-
-#### Exemplo:
-```java
-Path path1 = Paths.get("example.txt");
-Path path2 = Paths.get("./example.txt");
-boolean sameFile = Files.isSameFile(path1, path2);
-System.out.println(sameFile); // true, se os caminhos referenciam o mesmo arquivo
-```
-
-#### 5.4. `mismatch(Path, Path)`
-
-Este método compara o conteúdo de dois arquivos e retorna a posição do primeiro byte diferente, ou -1 se os arquivos forem idênticos. Isso é útil para detectar diferenças entre arquivos.
-
-#### Sintaxe:
-```java
-public static long mismatch(Path path1, Path path2) throws IOException
-```
-
-#### Exemplo:
-```java
-Path file1 = Paths.get("example1.txt");
-Path file2 = Paths.get("example2.txt");
-long mismatchPosition = Files.mismatch(file1, file2);
-if (mismatchPosition == -1) {
-    System.out.println("Files are identical");
-} else {
-    System.out.println("Files differ at byte position: " + mismatchPosition);
-}
-```
-
-Esses métodos ajudam a reduzir o código boilerplate, tornando a manipulação de arquivos mais eficiente e intuitiva.
-
-
 ### 6. **Padronização do Epsilon GC**
 
 No versão 11 do Java foi incluído o **Epsilon Garbage Collector** (Epsilon GC), um coletor de lixo experimental. O Epsilon GC é um coletor de lixo de "não-operação", significando que ele não faz nenhuma coleta de lixo ativa. Sua principal função é alocar memória sem nunca liberá-la.
@@ -543,7 +502,7 @@ A depreciação de pacotes e APIs no Java 11 reflete o esforço contínuo da com
 
 No Java 11, a linguagem e a biblioteca padrão foram aprimoradas com a introdução de novos métodos para coleções, facilitando ainda mais o trabalho com dados em coleções.
 
-### 8.1. `toArray(IntFunction<A[]>)` em `Collection`
+#### 8.1. `toArray(IntFunction<A[]>)` em `Collection`
 
 O método `toArray(IntFunction<A[]>)` foi adicionado à interface `Collection`. Ele permite a criação de um array de um tipo específico diretamente a partir de uma coleção, utilizando uma função para definir o tipo de array.
 
@@ -574,99 +533,6 @@ public class CollectionToArrayExample {
 #### Explicação:
 - **IntFunction<T[]> generator**: Um gerador de função que recebe o tamanho do array e retorna um novo array do tipo desejado.
 - **String[]::new**: Referência de método que cria um array de `String` com o tamanho especificado.
-
-### 8.2. `copyOf` em `List`, `Set`, e `Map`
-
-Os métodos `copyOf` foram adicionados às interfaces `List`, `Set`, e `Map`. Estes métodos criam coleções imutáveis a partir de outras coleções.
-
-#### Sintaxe:
-```java
-static <E> List<E> copyOf(Collection<? extends E> coll)
-static <E> Set<E> copyOf(Collection<? extends E> coll)
-static <K,V> Map<K,V> copyOf(Map<? extends K, ? extends V> map)
-```
-
-#### Exemplos:
-```java
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
-
-public class CollectionCopyOfExample {
-    public static void main(String[] args) {
-        // Exemplo com List
-        List<String> list = List.of("apple", "banana", "cherry");
-        List<String> copyList = List.copyOf(list);
-        System.out.println("List copy: " + copyList);
-
-        // Exemplo com Set
-        Set<String> set = Set.of("apple", "banana", "cherry");
-        Set<String> copySet = Set.copyOf(set);
-        System.out.println("Set copy: " + copySet);
-
-        // Exemplo com Map
-        Map<String, Integer> map = Map.of("apple", 1, "banana", 2, "cherry", 3);
-        Map<String, Integer> copyMap = Map.copyOf(map);
-        System.out.println("Map copy: " + copyMap);
-    }
-}
-```
-
-#### Explicação:
-- **List.copyOf(Collection<? extends E> coll)**: Cria uma nova lista imutável a partir da coleção fornecida.
-- **Set.copyOf(Collection<? extends E> coll)**: Cria um novo conjunto imutável a partir da coleção fornecida.
-- **Map.copyOf(Map<? extends K, ? extends V> map)**: Cria um novo mapa imutável a partir do mapa fornecido.
-
-### 8.3. `Collectors.toUnmodifiableList`, `Collectors.toUnmodifiableSet`, e `Collectors.toUnmodifiableMap`
-
-Estes novos coletores criam coleções imutáveis a partir de fluxos.
-
-#### Sintaxe:
-```java
-public static <T> Collector<T, ?, List<T>> toUnmodifiableList()
-public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet()
-public static <T, K, U> Collector<T, ?, Map<K, U>> toUnmodifiableMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper)
-```
-
-#### Exemplos:
-```java
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-public class CollectorsToUnmodifiableExample {
-    public static void main(String[] args) {
-        // Exemplo com toUnmodifiableList
-        List<String> list = List.of("apple", "banana", "cherry");
-        List<String> unmodifiableList = list.stream()
-                                             .collect(Collectors.toUnmodifiableList());
-        System.out.println("Unmodifiable List: " + unmodifiableList);
-
-        // Exemplo com toUnmodifiableSet
-        Set<String> set = list.stream()
-                              .collect(Collectors.toUnmodifiableSet());
-        System.out.println("Unmodifiable Set: " + set);
-
-        // Exemplo com toUnmodifiableMap
-        Map<String, Integer> unmodifiableMap = list.stream()
-                                                   .collect(Collectors.toUnmodifiableMap(
-                                                       fruit -> fruit, // keyMapper
-                                                       fruit -> fruit.length() // valueMapper
-                                                   ));
-        System.out.println("Unmodifiable Map: " + unmodifiableMap);
-    }
-}
-```
-
-#### Explicação:
-- **Collectors.toUnmodifiableList()**: Coleta os elementos de um fluxo em uma lista imutável.
-- **Collectors.toUnmodifiableSet()**: Coleta os elementos de um fluxo em um conjunto imutável.
-- **Collectors.toUnmodifiableMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper)**: Coleta os elementos de um fluxo em um mapa imutável, usando as funções fornecidas para mapear chaves e valores.
-
-### 8.4. Conclusão
-
-Os novos métodos adicionados às coleções no Java 11 proporcionam uma maneira mais conveniente e seguras de trabalhar com coleções imutáveis e de converter coleções para arrays. Esses métodos ajudam a simplificar o código, aumentar a legibilidade e garantir a integridade das coleções, especialmente em ambientes concorrentes ou quando a imutabilidade é um requisito.
 
 
 ### 9. **Melhorias no Fluxo de Pilha de Exceção**

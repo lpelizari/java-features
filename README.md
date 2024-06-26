@@ -1,3 +1,5 @@
-# **Recursos do Java em cada versão**
+# **About Java Releases** 
+[Wikipedia - Java Version History](https://en.wikipedia.org/wiki/Java_version_history)
 
-[`*Java 11*`](./docs/FeaturesJava11.md) 
+
+[Java releases](https://www.java.com/releases/)
